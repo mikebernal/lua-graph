@@ -1,15 +1,26 @@
-local composer = require( "composer" )
- 
-local scene = composer.newScene()
- 
 -- -----------------------------------------------------------------------------------
+-- Global settings
+-- -----------------------------------------------------------------------------------
+
+
+-- -----------------------------------------------------------------------------------
+-- Import libraries
+-- -----------------------------------------------------------------------------------
+
+local composer = require("composer")
+local widget   = require("widget")
+
+-- -----------------------------------------------------------------------------------
+-- Local settings
+-- -----------------------------------------------------------------------------------
+
+local scene = composer.newScene()
+
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
  
- 
- 
- 
+
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -19,6 +30,42 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
+    
+    -- Screen dimension 
+    local width  = display.actualContentWidth
+    local height = display.actualContentHeight
+
+    local funcTitle
+
+    local function toggleMenu( event )
+        if (event.phase == "ended") then
+            print("go to menu")
+            composer.gotoScene("menu", "slideLeft")
+        end
+    end
+
+    -- Background
+    local background = display.newRect(sceneGroup, 0, 0, width, height)
+      background.x = width  * 0.5
+      background.y = height * 0.4
+      background:setFillColor(255, 255, 255)
+
+    -- Screen title
+    local title = display.newText(sceneGroup, "Author", 0, 0, native.systemFont, 18)
+        title.x = width - 290
+        title.y = -25
+        title:setFillColor(0.1, 0.1, 0.1)
+
+    -- Navigation button
+    local navIcon = display.newText(sceneGroup, "Menu", 0, 0, native.systemFont, 18)
+        navIcon.x = width - 30
+        navIcon.y = -25
+        navIcon:setFillColor(0.1, 0.1, 0.1)
+
+    
+    -- Event listeners
+    navIcon:addEventListener("touch", toggleMenu)
+
  
 end
  
@@ -34,7 +81,7 @@ function scene:show( event )
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
- 
+
     end
 end
  

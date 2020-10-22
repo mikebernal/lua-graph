@@ -30,12 +30,25 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
-    
+
     -- Screen dimension 
     local width  = display.actualContentWidth
     local height = display.actualContentHeight
 
     local funcTitle
+
+    local options = {
+        isModal = true,
+        effect = "fade",
+        time = 400,
+    }
+
+    local function toggleMenu( event )
+        if (event.phase == "ended") then
+            print("go to menu")
+            composer.showOverlay("menu", options)
+        end
+    end
 
     -- Background
     local background = display.newRect(sceneGroup, 0, 0, width, height)
@@ -91,16 +104,26 @@ function scene:create( event )
     -- Initializing the DropDownMenu object
     local colorDDM = DDM.new({
         name = "functionName",
-        x = 10,
-        y = width - 40,
-        width = 300,
+        x = width - 160,
+        y = height - 270,
+        width = 295,
         height = 45,
         dataList = mathFunction,
         onRowSelected = onRowSelected
     })
- 
+
+    -- Group insertion
+    sceneGroup:insert(background)
+    sceneGroup:insert(navIcon)
+    sceneGroup:insert(title)
+    sceneGroup:insert(graph)
+    sceneGroup:insert(graphTitle)
+    sceneGroup:insert(colorDDM)
+    
+    -- Event listeners
+    navIcon:addEventListener("touch", toggleMenu)
+
 end
- 
  
 -- show()
 function scene:show( event )

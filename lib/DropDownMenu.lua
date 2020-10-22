@@ -5,19 +5,19 @@ local widget  = require "widget"
 -- DropDownMenu Module
 local DropDownMenu = {}
 
-display.setDefault( "anchorX", 0 )
-display.setDefault( "anchorY", 0 )
+-- display.setDefault( "anchorX", 0 )
+-- display.setDefault( "anchorY", 0 )
 
 -- Constant Default Values
 local cDefaultFontSize          = 13
 local cDefaultFont              = "DefaultFont"
 local cDefaultVisibleCellCount  = 4
-local cDefaultCellXPadding      = 6
+local cDefaultCellXPadding      = 0
 local cDefaultBorder            = 1
 local cDefaultButtonValue       = "Transformation function options"
 local cDefaultRowColor          = { default={ 1, 1, 1 }, over={ 0.5, 0.5, 0.5} }
 local cDefaultLineColor         = { 0.5, 0.5, 0.5 }
-local cDefaultCornerRadius      = 0.5
+local cDefaultCornerRadius      = 0
 
 --[[ params = {
         -- Simple Usage
@@ -46,7 +46,7 @@ function DropDownMenu.new( params )
     -- Required --
     local name             = params.name
     local x                = params.x
-    local y                = params.y
+    local y                = params.y + 20
     local width            = params.width
     local height           = params.height
     local onRowSelected    = params.onRowSelected
@@ -116,7 +116,7 @@ function DropDownMenu.new( params )
         local row    = event.row
         local params = event.row.params
 
-        local rowHeight = row.contentHeight
+        local rowHeight = row.contentHeight 
         local rowWidth  = row.contentWidth
 
         local rowTitle  = display.newText(row, params.value, 0, 0, rowWidth, rowHeight, native.systemFont, fontSize)
@@ -124,9 +124,10 @@ function DropDownMenu.new( params )
 
         row.contentHeight = row.contentHeight + rowTitle.height
         
-        rowTitle.anchorY = 0.5
-        rowTitle.x = 6
-        rowTitle.y = (rowHeight * 0.5) + fontSize/2
+        rowTitle.anchorY = 0
+        rowTitle.anchorX = 0
+        rowTitle.x = 20
+        rowTitle.y = 20
 
     end
     
@@ -146,14 +147,14 @@ function DropDownMenu.new( params )
     buttonBG:setFillColor( 0, 0, 0 )
     
     -- Instantiate Button object
-    button = display.newRect(dropDownMenu, 0, 0, buttonWidth, buttonHeight)
-    button:setFillColor( 1, 1, 1 )
+    button = display.newRect(dropDownMenu, -1, -1, buttonWidth, buttonHeight)
+    button:setFillColor(220/255, 220/255, 220/255)
     
     -- Instantiate Button label
     buttonLabel = display.newText(dropDownMenu, cDefaultButtonValue, 0, 0, 0, buttonHeight, nil, fontSize)
-    buttonLabel.y = (buttonHeight * 0.5) - (fontSize * 0.5)
+    buttonLabel.y = (buttonHeight * 0.5) - (fontSize * 0.5) - 10
     buttonLabel.x = cDefaultCellXPadding
-    --buttonLabel.y = buttonWidth * 0.5
+    -- buttonLabel.y = buttonWidth * 0.5
     
     buttonLabel:setFillColor(0)
     
@@ -161,8 +162,10 @@ function DropDownMenu.new( params )
     -- Instantiate Table --
     -----------------------
     ddmTable = widget.newTableView{
-        x = 0,
-        y = buttonHeight + cDefaultBorder,
+        x = -1,
+        y = buttonHeight + cDefaultBorder - 1,
+        -- x = 0,
+        -- y = buttonHeight + cDefaultBorder,
         width = buttonWidth,
         height = visibleCellCount * rowHeight,
         noLines = noLines,
@@ -175,12 +178,12 @@ function DropDownMenu.new( params )
                                         rowHeight, 
                                         buttonWidth + cDefaultBorder*2, 
                                         (visibleCellCount * rowHeight) + cDefaultBorder*2, 
-                                        5)
+                                        0)
     ddmTableBG:setFillColor( 0, 0, 0 )
     
     dropDownMenu:insert(dropDownMenu.numChildren+1, ddmTableBG)
     dropDownMenu:insert(dropDownMenu.numChildren+1, ddmTable)
-    dropDownMenu.x, dropDownMenu.y = x, y
+    dropDownMenu.x, dropDownMenu.y = x , y
     
     ---------------------------
     -- Instantiate ddm table --
