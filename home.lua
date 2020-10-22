@@ -35,6 +35,8 @@ function scene:create( event )
     local width  = display.actualContentWidth
     local height = display.actualContentHeight
 
+    local funcTitle
+
     -- Background
     local background = display.newRect(sceneGroup, 0, 0, width, height)
       background.x = width  * 0.5
@@ -53,12 +55,49 @@ function scene:create( event )
         navIcon.y = -25
         navIcon:setFillColor(0.1, 0.1, 0.1)
 
+    -- Function name
+    local graphTitle = display.newText(sceneGroup, "Function Name", 0, 0, native.systemFont, 18)
+        graphTitle.x = width - 155
+        graphTitle.y = 20
+        graphTitle:setFillColor(0.1, 0.1, 0.1)
+
     -- Graph placeholder
-    local graph = display.newImageRect(sceneGroup, "300.png", 300, 300)
+    local graph = display.newImageRect(sceneGroup, "300x240.png", 300, 240)
         graph.x = width * 0.5
-        graph.y = 200
+        graph.y = 150
 
+    -- DropDownMenu module
+    local DDM = require "lib.DropDownMenu"
+    local RowData = require "lib.RowData"
 
+    -- Color DDM Row Data
+    local mathFunction = {"sin", "cos", "tan", "log10"}
+    for i=1, #mathFunction do
+        local rowData = RowData.new(mathFunction[i], {ID=i})
+        mathFunction[i] = rowData
+    end
+
+    -- Callback function that will be called when a row is clicked.
+    local function onRowSelected(name, rowData)
+        if (name == "functionName") then
+            -- print("Transformation function is " .. rowData.value)
+            funcTitle = rowData.value
+            print("function is " .. funcTitle)
+            graphTitle.text = rowData.value
+
+        end
+    end
+
+    -- Initializing the DropDownMenu object
+    local colorDDM = DDM.new({
+        name = "functionName",
+        x = 10,
+        y = width - 40,
+        width = 300,
+        height = 45,
+        dataList = mathFunction,
+        onRowSelected = onRowSelected
+    })
  
 end
  
