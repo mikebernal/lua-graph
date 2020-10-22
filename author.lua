@@ -37,10 +37,17 @@ function scene:create( event )
 
     local funcTitle
 
+    local options = {
+        isModal = true,
+        effect = "fade",
+        time = 400,
+    }
+
     local function toggleMenu( event )
         if (event.phase == "ended") then
             print("go to menu")
-            composer.gotoScene("menu", "slideLeft")
+            composer.showOverlay("menu", options)
+
         end
     end
 
