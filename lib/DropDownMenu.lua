@@ -47,7 +47,7 @@ function DropDownMenu.new( params )
     local name             = params.name
     local x                = params.x
     local y                = params.y + 20
-    local width            = params.width
+    local width            = params.width + 5
     local height           = params.height
     local onRowSelected    = params.onRowSelected
     

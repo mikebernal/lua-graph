@@ -89,6 +89,9 @@ function scene:create( event )
     -- exit
     elseif(event.row.index == 9) then
         native.requestExit()
+    -- exit
+    else 
+        composer.hideOverlay( "fade", 400 )
     end
 
   end
