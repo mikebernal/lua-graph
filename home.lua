@@ -16,7 +16,6 @@ local widget   = require("widget")
 
 local scene = composer.newScene()
 
-local graphContainer = display.newGroup()
 
 local zeroDays  = { -2.76, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74 }
 local benign    = {  -2.4, -2.7, -2.07, 2.37, -2.14, -2.63, 2.07, 2.18, 2.24, 2.52   }
@@ -53,6 +52,8 @@ function scene:create( event )
         time = 400,
     }
 
+    -- STATIC ELEMENTS
+
     local function toggleMenu( event )
         if (event.phase == "ended") then
             print("go to menu")
@@ -83,24 +84,6 @@ function scene:create( event )
         graphTitle.x = width - 155
         graphTitle.y = 20
         graphTitle:setFillColor(0.1, 0.1, 0.1)
-
-    -- Graph
-    -- display.newRect( [parent,] x, y, width, height )
-    local graph = display.newRect(graphContainer, 0, 0, 300, 240)
-        graph.x = width * 0.5
-        graph.y = 150
-        graph.strokeWidth = 1
-        graph:setStrokeColor( 0.1 )
-
-    local redBox = display.newRect(graphContainer, 0, 0, 300, 240 )
-        redBox.x = graph.x
-        redBox.y = graph.y
-        redBox:setFillColor( 1, 0, 0, 0.8 )
-
-    local blueBox = display.newRect(graphContainer, 0, 0, 50, 50 )
-        blueBox.x = redBox.x
-        blueBox.y = redBox.y
-        blueBox:setFillColor( 0, 0, 1, 0.8 )
 
     -- DropDownMenu module
     local DDM = require "lib.DropDownMenu"
@@ -135,7 +118,38 @@ function scene:create( event )
         onRowSelected = onRowSelected
     })
 
-    -- Group insertion
+-- -----------------------------------------------------------------------------------
+--     Graph Container
+-- -----------------------------------------------------------------------------------
+
+    -- Include the padding
+    local graphContainer = display.newContainer(999, 999)
+    graphContainer.x = 10
+    graphContainer.y = 30
+
+    -- display.newRect( [parent,] x, y, width, height )
+    local graph = display.newRect(0, 0, 300, 239)
+        graph.anchorX = 0
+        graph.anchorY = 0
+        graph.strokeWidth = 1
+        graph:setStrokeColor( 0.1 )
+
+    local blueBox = display.newRect( 0, 0, 300, 10 )
+        blueBox:setFillColor( 0, 0, 1, 0.8 )
+        blueBox.anchorX = 0
+        blueBox.anchorY = 0
+
+    local redBox = display.newRect( 0, 10, 300, 12 )
+        redBox:setFillColor( 1, 0, 0, 0.8 )
+        redBox.anchorX = 0
+        redBox.anchorY = -20
+
+    -- Groupings
+    graphContainer:insert(graph)
+    graphContainer:insert(blueBox)
+    graphContainer:insert(redBox)
+
+
     sceneGroup:insert(background)
     sceneGroup:insert(navIcon)
     sceneGroup:insert(title)
