@@ -171,17 +171,21 @@ function scene:create( event )
 -- -----------------------------------------------------------------------------------
 
     -- Point radius
-    local radius = 3
+    local radius = 2.4
 
-    -- Render points in graph centre
+    -- Graph x, y spacing
     local xPlot  = 27 
     local yPlot  = 115
 
-    local clearance = -35
+    -- Graph point clearance
+    local clearance = 35
+
+    -- Invert points
+    local invert = -1
     
     -- Benign
     local function plotBenign(i, point)
-        local toPlot = display.newCircle(  i * xPlot, point * clearance + yPlot, radius )
+        local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
         print(point)
         toPlot:setFillColor(0, 0, 1, 1)
         graphContainer:insert(toPlot)
@@ -189,7 +193,7 @@ function scene:create( event )
 
     -- Malicious
     local function plotMalicious(i, point)
-        local toPlot = display.newCircle(  i * xPlot, point * clearance + yPlot, radius )
+        local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
         print(point)
         toPlot:setFillColor(1, 0, 0, 1)
         graphContainer:insert(toPlot)
@@ -197,14 +201,14 @@ function scene:create( event )
 
     -- Zero days
     local function plotZeroDays(i, point)
-        local toPlot = display.newCircle(  i * xPlot, point * clearance + yPlot, radius )
+        local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
         print(point)
         toPlot:setFillColor(0, 1, 0, 1)
         graphContainer:insert(toPlot)
     end
 
-    for i = 0, 240, 35 do
-        -- draw lines
+    -- Draw horiontal lines
+    for i = 0, 240, clearance do
         drawLines(i)
     end
 
