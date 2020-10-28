@@ -18,7 +18,5 @@
 
 #### To do
 
-1. Add hamburger menu icon
-2. Create drop down menu
-3. Display graph (zero days, benign, malignant)
-4. show / hide menu scene overlay
+1. Draw horizontal lines
+2. Set origin to lower left

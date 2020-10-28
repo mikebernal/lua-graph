@@ -128,26 +128,29 @@ function scene:create( event )
     graphContainer.y = 30
 
     -- display.newRect( [parent,] x, y, width, height )
-    local graph = display.newRect(0, 0, 300, 239)
+    local graph = display.newRect(0, 0, 300, 240)
         graph.anchorX = 0
         graph.anchorY = 0
         graph.strokeWidth = 1
         graph:setStrokeColor( 0.1 )
 
-    local blueBox = display.newRect( 0, 0, 300, 10 )
-        blueBox:setFillColor( 0, 0, 1, 0.8 )
-        blueBox.anchorX = 0
-        blueBox.anchorY = 0
+    -- local blueBox = display.newRect( 0, 0, 300, 10 )
+    --     blueBox:setFillColor( 0, 0, 1, 0.8 )
+    --     blueBox.anchorX = 0
+    --     blueBox.anchorY = 0
 
-    local redBox = display.newRect( 0, 10, 300, 12 )
-        redBox:setFillColor( 1, 0, 0, 0.8 )
-        redBox.anchorX = 0
-        redBox.anchorY = -20
+    -- local redBox = display.newRect( 0, 10, 300, 10 )
+    --     redBox:setFillColor( 1, 0, 0, 0.8 )
+    --     redBox.anchorX = 0
+    --     redBox.anchorY = 0
+
+
+
 
     -- Groupings
     graphContainer:insert(graph)
-    graphContainer:insert(blueBox)
-    graphContainer:insert(redBox)
+    -- graphContainer:insert(blueBox)
+    -- graphContainer:insert(redBox)
 
 
     sceneGroup:insert(background)
@@ -157,8 +160,38 @@ function scene:create( event )
     sceneGroup:insert(graphTitle)
     sceneGroup:insert(colorDDM)
     
+
+    local function drawLines(i)
+        local star = display.newLine( 0, i, 300, i )
+        star:setStrokeColor( 0, 0, 0, 0.1 )
+        star.strokeWidth = .89
+        graphContainer:insert(star)
+
+    end
+
+    for i = 10, 240, 10 do
+        -- draw lines
+        print(i)
+        drawLines(i)
+    end
+
+
     -- Event listeners
     navIcon:addEventListener("touch", toggleMenu)
+
+    -- Plot points
+    -- display.newCircle( [parent,] xCenter, yCenter, radius )
+    -- Top left origin xmin = 0, xmax= 300, ymin = 0, ymax = 240
+    local pointA = display.newCircle(300, 240, 2 )
+    pointA:setFillColor(1, 0, 0, 1)
+
+    local pointB = display.newCircle(0, 0, 2 )
+    pointB:setFillColor(1, 0, 0, 1)
+
+    graphContainer:insert(pointA)
+    graphContainer:insert(pointB)
+
+
 
 end
  
