@@ -135,7 +135,7 @@ function scene:create( event )
         graph.anchorX = 0
         graph.anchorY = 0
         graph.strokeWidth = 1
-        graph:setStrokeColor( 0.1 )
+        graph:setStrokeColor( 0, 0, 0, 0.1 )
 
     -- Groupings
     graphContainer:insert(graph)
@@ -151,6 +151,14 @@ function scene:create( event )
 --     Graph Lines
 -- -----------------------------------------------------------------------------------
 
+    -- Point radius
+    local radius = 3
+
+    -- Render points in graph centre
+    local xPlot  = 27 
+    local yPlot  = 115
+    
+
     local function drawLines(i)
         local line = display.newLine( 0, i, 300, i )
         line:setStrokeColor( 0, 0, 0, 0.1 )
@@ -159,83 +167,53 @@ function scene:create( event )
 
     end
 
-    for i = 10, 240, 10 do
-        -- draw lines)
-        drawLines(i)
-    end
-
 -- -----------------------------------------------------------------------------------
 --     Graph Points
 -- -----------------------------------------------------------------------------------
 
     -- Benign
     local function plotBenign(i, point)
-        local toPlot = display.newCircle(  i * 27, point * i + 100, 4 )
+        local toPlot = display.newCircle(  i * xPlot, point * i + yPlot, radius )
         print(point)
         toPlot:setFillColor(0, 0, 1, 1)
-        toPlot.strokeWidth = .89
         graphContainer:insert(toPlot)
 
-    end
-
-    for i = 1, table.getn(benign), 1 do
-        -- draw lines
-        plotBenign(i, benign[i])
     end
 
     -- Malicious
     local function plotMalicious(i, point)
-        local toPlot = display.newCircle(  i * 27, point * i + 100, 4 )
+        local toPlot = display.newCircle(  i * xPlot, point * i + yPlot, radius )
         print(point)
         toPlot:setFillColor(1, 0, 0, 1)
-        toPlot.strokeWidth = .89
         graphContainer:insert(toPlot)
 
-    end
-
-    for i = 1, table.getn(malicious), 1 do
-        -- draw lines
-        plotMalicious(i, malicious[i])
     end
 
     -- Zero days
     local function plotZeroDays(i, point)
-        local toPlot = display.newCircle(  i * 27, point * i + 100, 4 )
+        local toPlot = display.newCircle(  i * xPlot, point * i + yPlot, radius )
         print(point)
         toPlot:setFillColor(0, 1, 0, 1)
-        toPlot.strokeWidth = .89
         graphContainer:insert(toPlot)
 
     end
 
-    for i = 1, table.getn(zeroDays), 1 do
+    for i = 0, 240, 35 do
         -- draw lines
+        drawLines(i)
+    end
+
+    for i = 1, 10, 1 do
+        plotBenign(i, benign[i])
+        plotMalicious(i, malicious[i])
         plotZeroDays(i, zeroDays[i])
     end
 
 -- -----------------------------------------------------------------------------------
---     ---
+--     Event listeners
 -- -----------------------------------------------------------------------------------
 
-    -- Plot points
-    -- display.newCircle( [parent,] xCenter, yCenter, radius )
-    -- Top left 0, 0
-    -- Max 300, 240
-
-
-    -- local pointA = display.newCircle(0, 1, 4 )
-    -- pointA:setFillColor(1, 0, 0, 1)
-
-    -- local pointB = display.newCircle(300, 240, 4 )
-    -- pointB:setFillColor(0, 0, 1, 1)
-
-    -- graphContainer:insert(pointA)
-    -- graphContainer:insert(pointB)
-    
-
-    -- Event listeners
     navIcon:addEventListener("touch", toggleMenu)
-
 
 end
  

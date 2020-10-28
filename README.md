@@ -18,5 +18,5 @@
 
 #### To do
 
-1. Draw horizontal lines
-2. Set origin to lower left
+1. Connect each category with a line
+2. Apply transformation function
