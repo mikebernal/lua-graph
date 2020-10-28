@@ -19,7 +19,7 @@ local scene = composer.newScene()
 
 local benign    = {  -2.4, -2.7, -2.07, 2.37, -2.14, -2.63, 2.07, 2.18, 2.24, 2.52   }
 local malicious = {  2.52, 2.17, 2.36, -2.33, 2.45, 2.4, -2.14, -2.77, -2.51, -2.76  }
-local zeroDays  = { -2.76, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74 }
+local zeroDays  = { 0.25, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74 }
 
 
 -- local webView = native.newWebView( 200, 200, 200, 480 )
@@ -151,14 +151,13 @@ function scene:create( event )
 --     Graph Lines
 -- -----------------------------------------------------------------------------------
 
-    -- Point radius
-    local radius = 3
+    -- -- Point radius
+    -- local radius = 3
 
-    -- Render points in graph centre
-    local xPlot  = 27 
-    local yPlot  = 115
+    -- -- Render points in graph centre
+    -- local xPlot  = 27 
+    -- local yPlot  = 115
     
-
     local function drawLines(i)
         local line = display.newLine( 0, i, 300, i )
         line:setStrokeColor( 0, 0, 0, 0.1 )
@@ -171,31 +170,37 @@ function scene:create( event )
 --     Graph Points
 -- -----------------------------------------------------------------------------------
 
+    -- Point radius
+    local radius = 3
+
+    -- Render points in graph centre
+    local xPlot  = 27 
+    local yPlot  = 115
+
+    local clearance = -35
+    
     -- Benign
     local function plotBenign(i, point)
-        local toPlot = display.newCircle(  i * xPlot, point * i + yPlot, radius )
+        local toPlot = display.newCircle(  i * xPlot, point * clearance + yPlot, radius )
         print(point)
         toPlot:setFillColor(0, 0, 1, 1)
         graphContainer:insert(toPlot)
-
     end
 
     -- Malicious
     local function plotMalicious(i, point)
-        local toPlot = display.newCircle(  i * xPlot, point * i + yPlot, radius )
+        local toPlot = display.newCircle(  i * xPlot, point * clearance + yPlot, radius )
         print(point)
         toPlot:setFillColor(1, 0, 0, 1)
         graphContainer:insert(toPlot)
-
     end
 
     -- Zero days
     local function plotZeroDays(i, point)
-        local toPlot = display.newCircle(  i * xPlot, point * i + yPlot, radius )
+        local toPlot = display.newCircle(  i * xPlot, point * clearance + yPlot, radius )
         print(point)
         toPlot:setFillColor(0, 1, 0, 1)
         graphContainer:insert(toPlot)
-
     end
 
     for i = 0, 240, 35 do
