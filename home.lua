@@ -17,9 +17,10 @@ local widget   = require("widget")
 local scene = composer.newScene()
 
 
-local zeroDays  = { -2.76, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74 }
 local benign    = {  -2.4, -2.7, -2.07, 2.37, -2.14, -2.63, 2.07, 2.18, 2.24, 2.52   }
-local malignant = {  2.52, 2.17, 2.36, -2.33, 2.45, 2.4, -2.14, -2.77, -2.51, -2.76  }
+local malicious = {  2.52, 2.17, 2.36, -2.33, 2.45, 2.4, -2.14, -2.77, -2.51, -2.76  }
+local zeroDays  = { -2.76, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74 }
+
 
 -- local webView = native.newWebView( 200, 200, 200, 480 )
 -- webView:request( "test.html", system.ResourceDirectory )
@@ -111,7 +112,7 @@ function scene:create( event )
     local colorDDM = DDM.new({
         name = "functionName",
         x = width - 160,
-        y = height - 270,
+        y = height - 240,
         width = 295,
         height = 45,
         dataList = mathFunction,
@@ -124,8 +125,10 @@ function scene:create( event )
 
     -- Include the padding
     local graphContainer = display.newContainer(999, 999)
-    graphContainer.x = 10
-    graphContainer.y = 30
+        graphContainer.x = 10
+        graphContainer.y = 30
+        graphContainer.actualContentWidth = 12
+        graphContainer.actualContentHeight = 4
 
     -- display.newRect( [parent,] x, y, width, height )
     local graph = display.newRect(0, 0, 300, 240)
@@ -134,24 +137,8 @@ function scene:create( event )
         graph.strokeWidth = 1
         graph:setStrokeColor( 0.1 )
 
-    -- local blueBox = display.newRect( 0, 0, 300, 10 )
-    --     blueBox:setFillColor( 0, 0, 1, 0.8 )
-    --     blueBox.anchorX = 0
-    --     blueBox.anchorY = 0
-
-    -- local redBox = display.newRect( 0, 10, 300, 10 )
-    --     redBox:setFillColor( 1, 0, 0, 0.8 )
-    --     redBox.anchorX = 0
-    --     redBox.anchorY = 0
-
-
-
-
     -- Groupings
     graphContainer:insert(graph)
-    -- graphContainer:insert(blueBox)
-    -- graphContainer:insert(redBox)
-
 
     sceneGroup:insert(background)
     sceneGroup:insert(navIcon)
@@ -160,37 +147,94 @@ function scene:create( event )
     sceneGroup:insert(graphTitle)
     sceneGroup:insert(colorDDM)
     
+-- -----------------------------------------------------------------------------------
+--     Graph Lines
+-- -----------------------------------------------------------------------------------
 
     local function drawLines(i)
-        local star = display.newLine( 0, i, 300, i )
-        star:setStrokeColor( 0, 0, 0, 0.1 )
-        star.strokeWidth = .89
-        graphContainer:insert(star)
+        local line = display.newLine( 0, i, 300, i )
+        line:setStrokeColor( 0, 0, 0, 0.1 )
+        line.strokeWidth = .89
+        graphContainer:insert(line)
 
     end
 
     for i = 10, 240, 10 do
-        -- draw lines
-        print(i)
+        -- draw lines)
         drawLines(i)
     end
 
+-- -----------------------------------------------------------------------------------
+--     Graph Points
+-- -----------------------------------------------------------------------------------
 
-    -- Event listeners
-    navIcon:addEventListener("touch", toggleMenu)
+    -- Benign
+    local function plotBenign(i, point)
+        local toPlot = display.newCircle(  i * 27, point * i + 100, 4 )
+        print(point)
+        toPlot:setFillColor(0, 0, 1, 1)
+        toPlot.strokeWidth = .89
+        graphContainer:insert(toPlot)
+
+    end
+
+    for i = 1, table.getn(benign), 1 do
+        -- draw lines
+        plotBenign(i, benign[i])
+    end
+
+    -- Malicious
+    local function plotMalicious(i, point)
+        local toPlot = display.newCircle(  i * 27, point * i + 100, 4 )
+        print(point)
+        toPlot:setFillColor(1, 0, 0, 1)
+        toPlot.strokeWidth = .89
+        graphContainer:insert(toPlot)
+
+    end
+
+    for i = 1, table.getn(malicious), 1 do
+        -- draw lines
+        plotMalicious(i, malicious[i])
+    end
+
+    -- Zero days
+    local function plotZeroDays(i, point)
+        local toPlot = display.newCircle(  i * 27, point * i + 100, 4 )
+        print(point)
+        toPlot:setFillColor(0, 1, 0, 1)
+        toPlot.strokeWidth = .89
+        graphContainer:insert(toPlot)
+
+    end
+
+    for i = 1, table.getn(zeroDays), 1 do
+        -- draw lines
+        plotZeroDays(i, zeroDays[i])
+    end
+
+-- -----------------------------------------------------------------------------------
+--     ---
+-- -----------------------------------------------------------------------------------
 
     -- Plot points
     -- display.newCircle( [parent,] xCenter, yCenter, radius )
-    -- Top left origin xmin = 0, xmax= 300, ymin = 0, ymax = 240
-    local pointA = display.newCircle(300, 240, 2 )
-    pointA:setFillColor(1, 0, 0, 1)
+    -- Top left 0, 0
+    -- Max 300, 240
 
-    local pointB = display.newCircle(0, 0, 2 )
-    pointB:setFillColor(1, 0, 0, 1)
 
-    graphContainer:insert(pointA)
-    graphContainer:insert(pointB)
+    -- local pointA = display.newCircle(0, 1, 4 )
+    -- pointA:setFillColor(1, 0, 0, 1)
 
+    -- local pointB = display.newCircle(300, 240, 4 )
+    -- pointB:setFillColor(0, 0, 1, 1)
+
+    -- graphContainer:insert(pointA)
+    -- graphContainer:insert(pointB)
+    
+
+    -- Event listeners
+    navIcon:addEventListener("touch", toggleMenu)
 
 
 end
