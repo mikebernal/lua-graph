@@ -8,7 +8,6 @@
 -- -----------------------------------------------------------------------------------
 
 local composer = require("composer")
-local widget   = require("widget")
 
 -- -----------------------------------------------------------------------------------
 -- Local settings
@@ -20,6 +19,13 @@ local scene = composer.newScene()
 local benign    = {  -2.4, -2.7, -2.07, 2.37, -2.14, -2.63, 2.07, 2.18, 2.24, 2.52   }
 local malicious = {  2.52, 2.17, 2.36, -2.33, 2.45, 2.4, -2.14, -2.77, -2.51, -2.76  }
 local zeroDays  = { 0.25, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74 }
+
+local benignNetworkX   = {}
+local benignNetworkY   = {}
+local maliciousNetworkX = {}
+local maliciousNetworkY = {}
+local zeroDaysNetworkX  = {}
+local zeroDaysNetworkY  = {}
 
 
 -- local webView = native.newWebView( 200, 200, 200, 480 )
@@ -151,13 +157,6 @@ function scene:create( event )
 --     Graph Lines
 -- -----------------------------------------------------------------------------------
 
-    -- -- Point radius
-    -- local radius = 3
-
-    -- -- Render points in graph centre
-    -- local xPlot  = 27 
-    -- local yPlot  = 115
-    
     local function drawLines(i)
         local line = display.newLine( 0, i, 300, i )
         line:setStrokeColor( 0, 0, 0, 0.1 )
@@ -186,15 +185,45 @@ function scene:create( event )
     -- Benign
     local function plotBenign(i, point)
         local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
-        print(point)
+
+        benignNetworkX[i] = i * xPlot
+        benignNetworkY[i] = ((point * clearance) * invert) + yPlot
+        if (i == 10) then 
+            local star = display.newLine( benignNetworkX[1], benignNetworkY[1],  benignNetworkX[2], benignNetworkY[2])
+
+            for i = 3, 10, 1 do
+                star:append( benignNetworkX[i], benignNetworkY[i] )
+            end
+
+            star:setStrokeColor( 0, 0, 1, 1 )
+            star.strokeWidth = 1
+            graphContainer:insert(star)
+        end
+
+
         toPlot:setFillColor(0, 0, 1, 1)
         graphContainer:insert(toPlot)
+
     end
 
     -- Malicious
     local function plotMalicious(i, point)
         local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
-        print(point)
+
+        maliciousNetworkX[i] = i * xPlot
+        maliciousNetworkY[i] = ((point * clearance) * invert) + yPlot
+        if (i == 10) then 
+            local star = display.newLine( maliciousNetworkX[1], maliciousNetworkY[1],  maliciousNetworkX[2], maliciousNetworkY[2])
+
+            for i = 3, 10, 1 do
+                star:append( maliciousNetworkX[i], maliciousNetworkY[i] )
+            end
+
+            star:setStrokeColor( 1, 0, 0, 1 )
+            star.strokeWidth = 1
+            graphContainer:insert(star)
+        end
+
         toPlot:setFillColor(1, 0, 0, 1)
         graphContainer:insert(toPlot)
     end
@@ -202,7 +231,21 @@ function scene:create( event )
     -- Zero days
     local function plotZeroDays(i, point)
         local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
-        print(point)
+
+        zeroDaysNetworkX[i] = i * xPlot
+        zeroDaysNetworkY[i] = ((point * clearance) * invert) + yPlot
+        if (i == 10) then 
+            local star = display.newLine( zeroDaysNetworkX[1], zeroDaysNetworkY[1],  zeroDaysNetworkX[2], zeroDaysNetworkY[2])
+
+            for i = 3, 10, 1 do
+                star:append( zeroDaysNetworkX[i], zeroDaysNetworkY[i] )
+            end
+
+            star:setStrokeColor( 0, 1, 0, 1 )
+            star.strokeWidth = 1
+            graphContainer:insert(star)
+        end
+
         toPlot:setFillColor(0, 1, 0, 1)
         graphContainer:insert(toPlot)
     end
