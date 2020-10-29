@@ -13,24 +13,8 @@ local composer = require("composer")
 -- Local settings
 -- -----------------------------------------------------------------------------------
 
+
 local scene = composer.newScene()
-
-local benign    = {  -2.4, -2.7, -2.07, 2.37, -2.14, -2.63, 2.07, 2.18, 2.24, 2.52   }
-local malicious = {  2.52, 2.17, 2.36, -2.33, 2.45, 2.4, -2.14, -2.77, -2.51, -2.76  }
-local zeroDays  = { 0.25, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74  }
-
-local benignNetworkX   = {}
-local benignNetworkY   = {}
-local maliciousNetworkX = {}
-local maliciousNetworkY = {}
-local zeroDaysNetworkX  = {}
-local zeroDaysNetworkY  = {}
-
-local lDim = 10
-
-
--- local webView = native.newWebView( 200, 200, 200, 480 )
--- webView:request( "test.html", system.ResourceDirectory )
 
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
@@ -47,12 +31,185 @@ function scene:create( event )
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
 
-    -- Screen dimension 
+-- -----------------------------------------------------------------------------------
+--     Graph Container
+-- -----------------------------------------------------------------------------------
+    -- local graphContainer = display.newContainer(999, 999)
+    local graphContainer = display.newGroup()
+        graphContainer.x = 10
+        graphContainer.y = 30
+        graphContainer.actualContentWidth = 12
+        graphContainer.actualContentHeight = 4
+
+    local benignGroup    = display.newGroup()
+    local maliciousGroup = display.newGroup()
+    local zeroDaysGroup  = display.newGroup()
 
     local width  = display.actualContentWidth
     local height = display.actualContentHeight
 
+    local benign    = {  -2.4, -2.7, -2.07, 2.37, -2.14, -2.63, 2.07, 2.18, 2.24, 2.52   }
+    local malicious = {  2.52, 2.17, 2.36, -2.33, 2.45, 2.4, -2.14, -2.77, -2.51, -2.76  }
+    local zeroDays  = { 0.25, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74  }
+
+    local benignNetworkX   = {}
+    local benignNetworkY   = {}
+    local maliciousNetworkX = {}
+    local maliciousNetworkY = {}
+    local zeroDaysNetworkX  = {}
+    local zeroDaysNetworkY  = {}
+
+    local lDim = 10
+
     local funcTitle
+    -- Point radius
+    local radius = 2.4
+
+    -- Graph x, y spacing
+    local xPlot  = 27 
+    local yPlot  = 115
+
+    -- Graph point clearance
+    local clearance = 35
+
+    -- Invert points
+    local invert = -1
+    -- Render benign points, network
+    local function plotBenign(i, point)
+        local toPlot = display.newCircle( benignGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+
+        benignNetworkX[i] = i * xPlot
+        benignNetworkY[i] = ((point * clearance) * invert) + yPlot
+        if (i == 10) then 
+            local star = display.newLine( benignGroup, benignNetworkX[1], benignNetworkY[1],  benignNetworkX[2], benignNetworkY[2])
+
+            for i = 3, 10, 1 do
+                star:append( benignNetworkX[i], benignNetworkY[i] )
+            end
+
+            star:setStrokeColor( 0, 0, 1, 1 )
+            star.strokeWidth = 1
+        end
+
+        toPlot:setFillColor(0, 0, 1, 1)
+
+    end
+
+    -- Render malicious points, network
+    local function plotMalicious(i, point)
+        local toPlot = display.newCircle( maliciousGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+
+        maliciousNetworkX[i] = i * xPlot
+        maliciousNetworkY[i] = ((point * clearance) * invert) + yPlot
+        if (i == 10) then 
+            local star = display.newLine( maliciousGroup, maliciousNetworkX[1], maliciousNetworkY[1],  maliciousNetworkX[2], maliciousNetworkY[2])
+
+            for i = 3, 10, 1 do
+                star:append( maliciousNetworkX[i], maliciousNetworkY[i] )
+            end
+
+            star:setStrokeColor( 1, 0, 0, 1 )
+            star.strokeWidth = 1
+        end
+
+        toPlot:setFillColor(1, 0, 0, 1)
+    end
+
+    -- Render zero days points, network
+    local function plotZeroDays(i, point)
+        local toPlot = display.newCircle(  zeroDaysGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+
+        zeroDaysNetworkX[i] = i * xPlot
+        zeroDaysNetworkY[i] = ((point * clearance) * invert) + yPlot
+        if (i == 10) then 
+            local star = display.newLine( zeroDaysGroup, zeroDaysNetworkX[1], zeroDaysNetworkY[1],  zeroDaysNetworkX[2], zeroDaysNetworkY[2])
+
+            for i = 3, 10, 1 do
+                star:append( zeroDaysNetworkX[i], zeroDaysNetworkY[i] )
+            end
+
+            star:setStrokeColor( 0, 1, 0, 1 )
+            star.strokeWidth = 1
+        end
+
+        toPlot:setFillColor(0, 1, 0, 1)
+    end
+
+    -- DropDownMenu module
+    local DDM = require "lib.DropDownMenu"
+    local RowData = require "lib.RowData"
+
+    -- Color DDM Row Data
+    local mathFunction = { "default", "sin", "cos", "tan", "log10" }
+
+    for i=1, #mathFunction do
+        local rowData = RowData.new(mathFunction[i], {ID=i})
+        mathFunction[i] = rowData
+    end
+
+    local function drawLines(i)
+        local line = display.newLine( graphContainer, 0, i, 300, i )
+        line:setStrokeColor( 0, 0, 0, 0.1 )
+        line.strokeWidth = .89
+    end
+
+    local graphTitle = display.newText("", 0, 0, native.systemFont, 18)
+        graphTitle.x = width - 155
+        graphTitle.y = 20
+        graphTitle:setFillColor(0.1, 0.1, 0.1)
+
+    -- Callback function that will be called when a row is clicked.
+    local function onRowSelected(name, rowData)
+        if (name == "functionName") then
+            funcTitle = rowData.value
+            graphTitle.text = rowData.value
+        end
+
+        if (funcTitle == 'default') then
+            print('default')
+
+            -- if (benignGroup ~= nil and maliciousGroup ~= nil and zeroDaysGroup ~= nil) then
+            --     display.remove(benignGroup)
+            --     display.remove(maliciousGroup)
+            --     display.remove(zeroDaysGroup)
+            -- end
+
+            for i = 1, 10, 1 do
+                plotBenign(i, benign[i])
+                plotMalicious(i, malicious[i])
+                plotZeroDays(i, zeroDays[i])
+            end
+
+
+        elseif (funcTitle == 'sin') then
+            print('sin')
+
+        elseif (funcTitle == 'cos') then
+            print('cos')
+        
+        elseif (funcTitle == 'tan') then
+            print('tan')
+
+        elseif (funcTitle == 'log10') then
+            print('log10')
+
+        else
+            print('no selected')  
+
+        end
+
+    end
+
+    -- Initializing the DropDownMenu object
+    local colorDDM = DDM.new({
+        name = "functionName",
+        x = width - 160,
+        y = height - 230,
+        width = 295,
+        height = 45,
+        dataList = mathFunction,
+        onRowSelected = onRowSelected
+    })
 
     local options = {
         isModal = true,
@@ -72,71 +229,29 @@ function scene:create( event )
         legends.y = 5
 
     -- Background
-    local background = display.newRect(sceneGroup, 0, 0, width, height)
-      background.x = width  * 0.5
-      background.y = height * 0.4
-      background:setFillColor(255, 255, 255)
+    local background = display.newRect(0, 0, width, height)
+        background.x = width  * 0.5
+        background.y = height * 0.4
+        background:setFillColor(255, 255, 255)
 
     -- Screen title
-    local title = display.newText(sceneGroup, "Home", 0, 0, native.systemFont, 18)
+    local title = display.newText("Home", 0, 0, native.systemFont, 18)
         title.x = width - 290
         title.y = -25
         title:setFillColor(0.1, 0.1, 0.1)
 
     -- Navigation button
-    local navIcon = display.newText(sceneGroup, "Menu", 0, 0, native.systemFont, 18)
+    local navIcon = display.newText("Menu", 0, 0, native.systemFont, 18)
         navIcon.x = width - 30
         navIcon.y = -25
         navIcon:setFillColor(0.1, 0.1, 0.1)
 
-    -- Function name
-    local graphTitle = display.newText(sceneGroup, "", 0, 0, native.systemFont, 18)
-        graphTitle.x = width - 155
-        graphTitle.y = 20
-        graphTitle:setFillColor(0.1, 0.1, 0.1)
-
-    -- DropDownMenu module
-    local DDM = require "lib.DropDownMenu"
-    local RowData = require "lib.RowData"
-
-    -- Color DDM Row Data
-    local mathFunction = { "default", "sin", "cos", "tan", "log10" }
-
-    for i=1, #mathFunction do
-        local rowData = RowData.new(mathFunction[i], {ID=i})
-        mathFunction[i] = rowData
-    end
-
-    -- Callback function that will be called when a row is clicked.
-    local function onRowSelected(name, rowData)
-        if (name == "functionName") then
-            funcTitle = rowData.value
-            graphTitle.text = rowData.value
-        end
-    end
-
-    -- Initializing the DropDownMenu object
-    local colorDDM = DDM.new({
-        name = "functionName",
-        x = width - 160,
-        y = height - 200,
-        width = 295,
-        height = 45,
-        dataList = mathFunction,
-        onRowSelected = onRowSelected
-    })
-
-
--- -----------------------------------------------------------------------------------
---     Graph Container
--- -----------------------------------------------------------------------------------
+    -- -----------------------------------------------------------------------------------
+    --     Graph Points
+    -- -----------------------------------------------------------------------------------
 
     -- Include the padding
-    local graphContainer = display.newContainer(999, 999)
-        graphContainer.x = 10
-        graphContainer.y = 30
-        graphContainer.actualContentWidth = 12
-        graphContainer.actualContentHeight = 4
+
 
     -- display.newRect( [parent,] x, y, width, height )
     local graph = display.newRect(0, 0, 300, 240)
@@ -145,129 +260,11 @@ function scene:create( event )
         graph.strokeWidth = 1
         graph:setStrokeColor( 0, 0, 0, 0.1 )
 
-    -- Groupings
-    graphContainer:insert(graph)
-    graphContainer:insert(legends)
-
-    sceneGroup:insert(background)
-    sceneGroup:insert(navIcon)
-    sceneGroup:insert(title)
-    sceneGroup:insert(graphContainer)
-    sceneGroup:insert(graphTitle)
-    sceneGroup:insert(colorDDM)
-    
--- -----------------------------------------------------------------------------------
---     Graph Lines
--- -----------------------------------------------------------------------------------
-
-    local function drawLines(i)
-        local line = display.newLine( 0, i, 300, i )
-        line:setStrokeColor( 0, 0, 0, 0.1 )
-        line.strokeWidth = .89
-        graphContainer:insert(line)
-
-    end
-
--- -----------------------------------------------------------------------------------
---     Graph Points
--- -----------------------------------------------------------------------------------
-
-    -- Point radius
-    local radius = 2.4
-
-    -- Graph x, y spacing
-    local xPlot  = 27 
-    local yPlot  = 115
-
-    -- Graph point clearance
-    local clearance = 35
-
-    -- Invert points
-    local invert = -1
-    
-    -- Render benign points, network
-    local function plotBenign(i, point, category)
-        local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
-
-        benignNetworkX[i] = i * xPlot
-        benignNetworkY[i] = ((point * clearance) * invert) + yPlot
-        if (i == 10) then 
-            local star = display.newLine( benignNetworkX[1], benignNetworkY[1],  benignNetworkX[2], benignNetworkY[2])
-
-            for i = 3, 10, 1 do
-                star:append( benignNetworkX[i], benignNetworkY[i] )
-            end
-
-            star:setStrokeColor( 0, 0, 1, 1 )
-            star.strokeWidth = 1
-            graphContainer:insert(star)
-        end
 
 
-        toPlot:setFillColor(0, 0, 1, 1)
-        graphContainer:insert(toPlot)
-
-    end
-
-    -- Render malicious points, network
-    local function plotMalicious(i, point)
-        local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
-
-        maliciousNetworkX[i] = i * xPlot
-        maliciousNetworkY[i] = ((point * clearance) * invert) + yPlot
-        if (i == 10) then 
-            local star = display.newLine( maliciousNetworkX[1], maliciousNetworkY[1],  maliciousNetworkX[2], maliciousNetworkY[2])
-
-            for i = 3, 10, 1 do
-                star:append( maliciousNetworkX[i], maliciousNetworkY[i] )
-            end
-
-            star:setStrokeColor( 1, 0, 0, 1 )
-            star.strokeWidth = 1
-            graphContainer:insert(star)
-        end
-
-        toPlot:setFillColor(1, 0, 0, 1)
-        graphContainer:insert(toPlot)
-    end
-
-    -- Render zero days points, network
-    local function plotZeroDays(i, point)
-        local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
-
-        zeroDaysNetworkX[i] = i * xPlot
-        zeroDaysNetworkY[i] = ((point * clearance) * invert) + yPlot
-        if (i == 10) then 
-            local star = display.newLine( zeroDaysNetworkX[1], zeroDaysNetworkY[1],  zeroDaysNetworkX[2], zeroDaysNetworkY[2])
-
-            for i = 3, 10, 1 do
-                star:append( zeroDaysNetworkX[i], zeroDaysNetworkY[i] )
-            end
-
-            star:setStrokeColor( 0, 1, 0, 1 )
-            star.strokeWidth = 1
-            graphContainer:insert(star)
-        end
-
-        toPlot:setFillColor(0, 1, 0, 1)
-        graphContainer:insert(toPlot)
-    end
-
-    -- Draw horiontal lines
-    for i = 0, 240, clearance do
-        drawLines(i)
-    end
-
-    -- Plot points
-    for i = 1, 10, 1 do
-        plotBenign(i, benign[i])
-        plotMalicious(i, malicious[i])
-        plotZeroDays(i, zeroDays[i])
-    end
-
--- -----------------------------------------------------------------------------------
---     Graph Legend
--- -----------------------------------------------------------------------------------
+    -- -----------------------------------------------------------------------------------
+    --     Graph Legend
+    -- -----------------------------------------------------------------------------------
 
     local benignLegend = display.newRect( 0, 0, lDim, lDim)
         benignLegend.x = 10
@@ -300,6 +297,17 @@ function scene:create( event )
         zeroDaysLabel.y = 280
         zeroDaysLabel:setFillColor(0)
 
+    -- Groupings
+    graphContainer:insert(graph)
+    graphContainer:insert(legends)
+
+    sceneGroup:insert(background)
+    sceneGroup:insert(navIcon)
+    sceneGroup:insert(title)
+    sceneGroup:insert(graphContainer)
+    sceneGroup:insert(graphTitle)
+    sceneGroup:insert(colorDDM)
+
     legends:insert(benignLegend)
     legends:insert(maliciousLegend)
     legends:insert(zeroDaysLegend)
@@ -307,6 +315,14 @@ function scene:create( event )
     legends:insert(benignLabel)
     legends:insert(maliciousLabel)
     legends:insert(zeroDaysLabel)
+    
+    graphContainer:insert(benignGroup )  
+    graphContainer:insert(maliciousGroup)
+    graphContainer:insert(zeroDaysGroup )
+    -- -- Draw horiontal lines
+    for i = 0, 240, clearance do
+        drawLines(i)
+    end
 
 -- -----------------------------------------------------------------------------------
 --     Event listeners
@@ -321,12 +337,14 @@ function scene:show( event )
  
     local sceneGroup = self.view
     local phase = event.phase
- 
+
+
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
- 
+     
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
+
 
     end
 end
@@ -337,10 +355,10 @@ function scene:hide( event )
  
     local sceneGroup = self.view
     local phase = event.phase
+
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
- 
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
  
