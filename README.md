@@ -18,5 +18,7 @@
 
 #### To do
 
-1. Connect each category with a line
+1. Insert Graph legent
 2. Apply transformation function
+3. Refactor code
+4. Group elements

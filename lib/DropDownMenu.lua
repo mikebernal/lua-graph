@@ -11,7 +11,7 @@ local DropDownMenu = {}
 -- Constant Default Values
 local cDefaultFontSize          = 13
 local cDefaultFont              = "DefaultFont"
-local cDefaultVisibleCellCount  = 5
+local cDefaultVisibleCellCount  = 3
 local cDefaultCellXPadding      = 0
 local cDefaultBorder            = 1
 local cDefaultButtonValue       = "Transformation function options"

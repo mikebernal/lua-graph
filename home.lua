@@ -15,10 +15,9 @@ local composer = require("composer")
 
 local scene = composer.newScene()
 
-
 local benign    = {  -2.4, -2.7, -2.07, 2.37, -2.14, -2.63, 2.07, 2.18, 2.24, 2.52   }
 local malicious = {  2.52, 2.17, 2.36, -2.33, 2.45, 2.4, -2.14, -2.77, -2.51, -2.76  }
-local zeroDays  = { 0.25, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74 }
+local zeroDays  = { 0.25, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74  }
 
 local benignNetworkX   = {}
 local benignNetworkY   = {}
@@ -26,6 +25,8 @@ local maliciousNetworkX = {}
 local maliciousNetworkY = {}
 local zeroDaysNetworkX  = {}
 local zeroDaysNetworkY  = {}
+
+local lDim = 10
 
 
 -- local webView = native.newWebView( 200, 200, 200, 480 )
@@ -63,7 +64,6 @@ function scene:create( event )
 
     local function toggleMenu( event )
         if (event.phase == "ended") then
-            print("go to menu")
             composer.showOverlay("menu", options)
         end
     end
@@ -107,9 +107,7 @@ function scene:create( event )
     -- Callback function that will be called when a row is clicked.
     local function onRowSelected(name, rowData)
         if (name == "functionName") then
-            -- print("Transformation function is " .. rowData.value)
             funcTitle = rowData.value
-            print("function is " .. funcTitle)
             graphTitle.text = rowData.value
         end
     end
@@ -118,12 +116,13 @@ function scene:create( event )
     local colorDDM = DDM.new({
         name = "functionName",
         x = width - 160,
-        y = height - 240,
+        y = height - 200,
         width = 295,
         height = 45,
         dataList = mathFunction,
         onRowSelected = onRowSelected
     })
+
 
 -- -----------------------------------------------------------------------------------
 --     Graph Container
@@ -182,8 +181,8 @@ function scene:create( event )
     -- Invert points
     local invert = -1
     
-    -- Benign
-    local function plotBenign(i, point)
+    -- Render benign points, network
+    local function plotBenign(i, point, category)
         local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
 
         benignNetworkX[i] = i * xPlot
@@ -206,7 +205,7 @@ function scene:create( event )
 
     end
 
-    -- Malicious
+    -- Render malicious points, network
     local function plotMalicious(i, point)
         local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
 
@@ -228,7 +227,7 @@ function scene:create( event )
         graphContainer:insert(toPlot)
     end
 
-    -- Zero days
+    -- Render zero days points, network
     local function plotZeroDays(i, point)
         local toPlot = display.newCircle(  i * xPlot, ((point * clearance) * invert) + yPlot, radius )
 
@@ -255,11 +254,56 @@ function scene:create( event )
         drawLines(i)
     end
 
+    -- Plot points
     for i = 1, 10, 1 do
         plotBenign(i, benign[i])
         plotMalicious(i, malicious[i])
         plotZeroDays(i, zeroDays[i])
     end
+
+-- -----------------------------------------------------------------------------------
+--     Graph Legend
+-- -----------------------------------------------------------------------------------
+
+    local benignLegend = display.newRect(sceneGroup, 0, 0, lDim, lDim)
+        benignLegend.x = 10
+        benignLegend.y = 250
+        benignLegend:setFillColor(0, 0, 255)
+
+    local maliciousLegend = display.newRect(sceneGroup, 0, 0, lDim, lDim)
+        maliciousLegend.x = 10
+        maliciousLegend.y = 265
+        maliciousLegend:setFillColor(255, 0, 0)
+
+    local zeroDaysLegend = display.newRect(sceneGroup, 0, 0, lDim, lDim)
+        zeroDaysLegend.x =  10
+        zeroDaysLegend.y = 280
+        zeroDaysLegend:setFillColor(0, 255, 0)
+
+
+    -- Legend Label
+    local benignLabel = display.newText(sceneGroup, "Benign", 0, 0, native.systemFont, 11)
+        benignLabel.x = 39
+        benignLabel.y = 250
+        benignLabel:setFillColor(0)
+
+    local maliciousLabel = display.newText(sceneGroup, "Malicious", 0, 0, native.systemFont, 11)
+        maliciousLabel.x = 45
+        maliciousLabel.y = 265
+        maliciousLabel:setFillColor(0)
+
+    local zeroDaysLabel = display.newText(sceneGroup, "Zero Days", 0, 0, native.systemFont, 11)
+        zeroDaysLabel.x = 48
+        zeroDaysLabel.y = 280
+        zeroDaysLabel:setFillColor(0)
+
+    graphContainer:insert(benignLegend)
+    graphContainer:insert(maliciousLegend)
+    graphContainer:insert(zeroDaysLegend)
+
+    graphContainer:insert(benignLabel)
+    graphContainer:insert(maliciousLabel)
+    graphContainer:insert(zeroDaysLabel)
 
 -- -----------------------------------------------------------------------------------
 --     Event listeners
