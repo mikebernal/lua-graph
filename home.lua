@@ -68,6 +68,9 @@ function scene:create( event )
         end
     end
 
+    local legends = display.newGroup()
+        legends.y = 5
+
     -- Background
     local background = display.newRect(sceneGroup, 0, 0, width, height)
       background.x = width  * 0.5
@@ -144,6 +147,7 @@ function scene:create( event )
 
     -- Groupings
     graphContainer:insert(graph)
+    graphContainer:insert(legends)
 
     sceneGroup:insert(background)
     sceneGroup:insert(navIcon)
@@ -265,45 +269,44 @@ function scene:create( event )
 --     Graph Legend
 -- -----------------------------------------------------------------------------------
 
-    local benignLegend = display.newRect(sceneGroup, 0, 0, lDim, lDim)
+    local benignLegend = display.newRect( 0, 0, lDim, lDim)
         benignLegend.x = 10
         benignLegend.y = 250
         benignLegend:setFillColor(0, 0, 255)
 
-    local maliciousLegend = display.newRect(sceneGroup, 0, 0, lDim, lDim)
+    local maliciousLegend = display.newRect( 0, 0, lDim, lDim)
         maliciousLegend.x = 10
         maliciousLegend.y = 265
         maliciousLegend:setFillColor(255, 0, 0)
 
-    local zeroDaysLegend = display.newRect(sceneGroup, 0, 0, lDim, lDim)
+    local zeroDaysLegend = display.newRect( 0, 0, lDim, lDim)
         zeroDaysLegend.x =  10
         zeroDaysLegend.y = 280
         zeroDaysLegend:setFillColor(0, 255, 0)
 
-
     -- Legend Label
-    local benignLabel = display.newText(sceneGroup, "Benign", 0, 0, native.systemFont, 11)
+    local benignLabel = display.newText( "Benign", 0, 0, native.systemFont, 11)
         benignLabel.x = 39
         benignLabel.y = 250
         benignLabel:setFillColor(0)
 
-    local maliciousLabel = display.newText(sceneGroup, "Malicious", 0, 0, native.systemFont, 11)
+    local maliciousLabel = display.newText( "Malicious", 0, 0, native.systemFont, 11)
         maliciousLabel.x = 45
         maliciousLabel.y = 265
         maliciousLabel:setFillColor(0)
 
-    local zeroDaysLabel = display.newText(sceneGroup, "Zero Days", 0, 0, native.systemFont, 11)
+    local zeroDaysLabel = display.newText( "Zero Days", 0, 0, native.systemFont, 11)
         zeroDaysLabel.x = 48
         zeroDaysLabel.y = 280
         zeroDaysLabel:setFillColor(0)
 
-    graphContainer:insert(benignLegend)
-    graphContainer:insert(maliciousLegend)
-    graphContainer:insert(zeroDaysLegend)
+    legends:insert(benignLegend)
+    legends:insert(maliciousLegend)
+    legends:insert(zeroDaysLegend)
 
-    graphContainer:insert(benignLabel)
-    graphContainer:insert(maliciousLabel)
-    graphContainer:insert(zeroDaysLabel)
+    legends:insert(benignLabel)
+    legends:insert(maliciousLabel)
+    legends:insert(zeroDaysLabel)
 
 -- -----------------------------------------------------------------------------------
 --     Event listeners
