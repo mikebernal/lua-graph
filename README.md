@@ -18,10 +18,6 @@
 
 #### To do
 
-1. Insert Graph legend
-2. Apply transformation function
-3. Refactor code
-4. Group elements
-5. Add toggle connection point
+1. Bug: remove plotted points when new function is selected
 
 Authored by Mike Bernal

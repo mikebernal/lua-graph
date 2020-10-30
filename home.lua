@@ -169,35 +169,75 @@ function listFunctions()
 
 end
 
+function removePlots() 
+    display.remove(benignGroup)
+    display.remove(maliciousGroup)
+    display.remove(zeroDaysGroup)
+end
+
 -- Callback function that will be called when a row is clicked.
 function onRowSelected(name, rowData)
-    
+
     if (name == "functionName") then
         graphTitle.text = rowData.value
     end
 
     if (graphTitle.text == 'default') then
         print('default')
+
+        if (benignGroup ~= nil and maliciousGroup ~= nil and zeroDaysGroup ~= nil) then
+            removePlots()
+        end
+
         for i = 1, 10, 1 do
             plotBenign(i, benign[i])
             plotMalicious(i, malicious[i])
             plotZeroDays(i, zeroDays[i])
         end
+
     elseif (graphTitle.text == 'sin') then
         print('sin')
-        if benignGroup ~= nil then
-            display.remove(benignGroup)
+        
+        if (benignGroup ~= nil and maliciousGroup ~= nil and zeroDaysGroup ~= nil) then
+            removePlots()
+        end
+
+        for i = 1, 10, 1 do
+            plotBenign(i, math.sin(benign[i]))
+            plotMalicious(i, math.sin(malicious[i]))
+            plotZeroDays(i, math.sin(zeroDays[i]))
         end
 
     elseif (graphTitle.text == 'cos') then
         print('cos')
+
+        if (benignGroup ~= nil and maliciousGroup ~= nil and zeroDaysGroup ~= nil) then
+            removePlots()
+        end
+
+        for i = 1, 10, 1 do
+            plotBenign(i, math.cos(benign[i]))
+            plotMalicious(i, math.cos(malicious[i]))
+            plotZeroDays(i, math.cos(zeroDays[i]))
+        end
     
     elseif (graphTitle.text == 'tan') then
         print('tan')
 
+        for i = 1, 10, 1 do
+            plotBenign(i, math.tan(benign[i]))
+            plotMalicious(i, math.tan(malicious[i]))
+            plotZeroDays(i, math.tan(zeroDays[i]))
+        end
+
     elseif (graphTitle.text == 'log10') then
         print('log10')
 
+        for i = 1, 10, 1 do
+            plotBenign(i, math.log10(benign[i]))
+            plotMalicious(i, math.log10(malicious[i]))
+            plotZeroDays(i, math.log10(zeroDays[i]))
+        end
     else
         print('no selected')  
 
