@@ -63,11 +63,13 @@ file = nil
 -- -----------------------------------------------------------------------------------
 
 local function toggleMenu( event )
+
     if (event.phase == "ended") then
         composer.showOverlay("menu", options)
         author.isVisible = false
 
     end
+    
     author.isVisible = true
 
 end
