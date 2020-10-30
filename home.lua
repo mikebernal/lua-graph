@@ -170,10 +170,14 @@ function listFunctions()
 end
 
 function removePlots() 
-    display.remove(benignGroup)
-    display.remove(maliciousGroup)
-    display.remove(zeroDaysGroup)
+    if (benignGroup ~= nil and maliciousGroup ~= nil and zeroDaysGroup ~= nil) then
+        display.remove(benignGroup)
+        display.remove(maliciousGroup)
+        display.remove(zeroDaysGroup)
+    end
 end
+
+
 
 -- Callback function that will be called when a row is clicked.
 function onRowSelected(name, rowData)
@@ -185,9 +189,7 @@ function onRowSelected(name, rowData)
     if (graphTitle.text == 'default') then
         print('default')
 
-        if (benignGroup ~= nil and maliciousGroup ~= nil and zeroDaysGroup ~= nil) then
-            removePlots()
-        end
+         removePlots()
 
         for i = 1, 10, 1 do
             plotBenign(i, benign[i])
@@ -198,9 +200,7 @@ function onRowSelected(name, rowData)
     elseif (graphTitle.text == 'sin') then
         print('sin')
         
-        if (benignGroup ~= nil and maliciousGroup ~= nil and zeroDaysGroup ~= nil) then
-            removePlots()
-        end
+        removePlots()
 
         for i = 1, 10, 1 do
             plotBenign(i, math.sin(benign[i]))
@@ -211,9 +211,7 @@ function onRowSelected(name, rowData)
     elseif (graphTitle.text == 'cos') then
         print('cos')
 
-        if (benignGroup ~= nil and maliciousGroup ~= nil and zeroDaysGroup ~= nil) then
-            removePlots()
-        end
+        removePlots()
 
         for i = 1, 10, 1 do
             plotBenign(i, math.cos(benign[i]))
@@ -224,6 +222,8 @@ function onRowSelected(name, rowData)
     elseif (graphTitle.text == 'tan') then
         print('tan')
 
+        removePlots()
+
         for i = 1, 10, 1 do
             plotBenign(i, math.tan(benign[i]))
             plotMalicious(i, math.tan(malicious[i]))
@@ -232,6 +232,8 @@ function onRowSelected(name, rowData)
 
     elseif (graphTitle.text == 'log10') then
         print('log10')
+
+        removePlots()
 
         for i = 1, 10, 1 do
             plotBenign(i, math.log10(benign[i]))
@@ -264,14 +266,9 @@ function scene:create( event )
         graphContainer.y = 30
         graphContainer.actualContentWidth  = 12
         graphContainer.actualContentHeight = 4
-
-    -- benignGroup    = display.newGroup()
-    -- maliciousGroup = display.newGroup()
-    -- zeroDaysGroup  = display.newGroup()
-
+        
     legends = display.newGroup()
         legends.y = 5
-
 
     local function drawLines(i)
         local line = display.newLine( graphContainer, 0, i, 300, i )
@@ -386,8 +383,7 @@ function scene:hide( event )
         -- Code here runs when the scene is on screen (but is about to go off screen)
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
-
-
+        removePlots()
     end
 end
  
