@@ -81,14 +81,14 @@ function scene:create( event )
         benignNetworkX[i] = i * xPlot
         benignNetworkY[i] = ((point * clearance) * invert) + yPlot
         if (i == 10) then 
-            local star = display.newLine( benignGroup, benignNetworkX[1], benignNetworkY[1],  benignNetworkX[2], benignNetworkY[2])
+            local node = display.newLine( benignGroup, benignNetworkX[1], benignNetworkY[1],  benignNetworkX[2], benignNetworkY[2])
 
             for i = 3, 10, 1 do
-                star:append( benignNetworkX[i], benignNetworkY[i] )
+                node:append( benignNetworkX[i], benignNetworkY[i] )
             end
 
-            star:setStrokeColor( 0, 0, 1, 1 )
-            star.strokeWidth = 1
+            node:setStrokeColor( 0, 0, 1, 1 )
+            node.strokeWidth = 1
         end
 
         toPlot:setFillColor(0, 0, 1, 1)
@@ -102,14 +102,14 @@ function scene:create( event )
         maliciousNetworkX[i] = i * xPlot
         maliciousNetworkY[i] = ((point * clearance) * invert) + yPlot
         if (i == 10) then 
-            local star = display.newLine( maliciousGroup, maliciousNetworkX[1], maliciousNetworkY[1],  maliciousNetworkX[2], maliciousNetworkY[2])
+            local node = display.newLine( maliciousGroup, maliciousNetworkX[1], maliciousNetworkY[1],  maliciousNetworkX[2], maliciousNetworkY[2])
 
             for i = 3, 10, 1 do
-                star:append( maliciousNetworkX[i], maliciousNetworkY[i] )
+                node:append( maliciousNetworkX[i], maliciousNetworkY[i] )
             end
 
-            star:setStrokeColor( 1, 0, 0, 1 )
-            star.strokeWidth = 1
+            node:setStrokeColor( 1, 0, 0, 1 )
+            node.strokeWidth = 1
         end
 
         toPlot:setFillColor(1, 0, 0, 1)
@@ -122,14 +122,14 @@ function scene:create( event )
         zeroDaysNetworkX[i] = i * xPlot
         zeroDaysNetworkY[i] = ((point * clearance) * invert) + yPlot
         if (i == 10) then 
-            local star = display.newLine( zeroDaysGroup, zeroDaysNetworkX[1], zeroDaysNetworkY[1],  zeroDaysNetworkX[2], zeroDaysNetworkY[2])
+            local node = display.newLine( zeroDaysGroup, zeroDaysNetworkX[1], zeroDaysNetworkY[1],  zeroDaysNetworkX[2], zeroDaysNetworkY[2])
 
             for i = 3, 10, 1 do
-                star:append( zeroDaysNetworkX[i], zeroDaysNetworkY[i] )
+                node:append( zeroDaysNetworkX[i], zeroDaysNetworkY[i] )
             end
 
-            star:setStrokeColor( 0, 1, 0, 1 )
-            star.strokeWidth = 1
+            node:setStrokeColor( 0, 1, 0, 1 )
+            node.strokeWidth = 1
         end
 
         toPlot:setFillColor(0, 1, 0, 1)
