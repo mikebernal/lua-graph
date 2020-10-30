@@ -40,6 +40,10 @@ local yPlot     = 115
 local clearance = 35
 local invert    = -1
 
+local benignToPlot
+local maliciousToPlot
+local zeroDaysToPlot
+
 -- UI elements
 local background
 local title
@@ -63,89 +67,127 @@ local maliciousGroup
 local zeroDaysGroup 
 local legends
 
+local benignNode
+local maliciousNode
+local zeroDaysNode
+
 -- -----------------------------------------------------------------------------------
 -- Function definition
 -- -----------------------------------------------------------------------------------
 
 -- Display screen menu
 function toggleMenu( event )
+
     if (event.phase == "ended") then
         composer.showOverlay("menu", options)
     end
+
 end
 
 -- Render benign points and network
 function plotBenign(i, point)
-    local toPlot = display.newCircle( benignGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+
+    benignGroup  = display.newGroup()
+    benignToPlot = display.newCircle( benignGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+     benignToPlot:setFillColor(0, 0, 1, 1)
 
     benignNetworkX[i] = i * xPlot
     benignNetworkY[i] = ((point * clearance) * invert) + yPlot
+
     if (i == 10) then 
-        local node = display.newLine( benignGroup, benignNetworkX[1], benignNetworkY[1],  benignNetworkX[2], benignNetworkY[2])
+        benignNode = display.newLine( benignGroup, benignNetworkX[1], benignNetworkY[1],  benignNetworkX[2], benignNetworkY[2])
+            benignNode:setStrokeColor( 0, 0, 1, 1 )
+            benignNode.strokeWidth = 1
 
         for i = 3, 10, 1 do
-            node:append( benignNetworkX[i], benignNetworkY[i] )
+            benignNode:append( benignNetworkX[i], benignNetworkY[i] )
         end
 
-        node:setStrokeColor( 0, 0, 1, 1 )
-        node.strokeWidth = 1
     end
 
-    toPlot:setFillColor(0, 0, 1, 1)
+    graphContainer:insert(benignGroup)
 
 end
 
 -- Render malicious points and network
 function plotMalicious(i, point)
-    local toPlot = display.newCircle( maliciousGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+
+    maliciousGroup  = display.newGroup()
+    MaliciousToPlot = display.newCircle( maliciousGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+        MaliciousToPlot:setFillColor(1, 0, 0, 1)
 
     maliciousNetworkX[i] = i * xPlot
     maliciousNetworkY[i] = ((point * clearance) * invert) + yPlot
+
     if (i == 10) then 
-        local node = display.newLine( maliciousGroup, maliciousNetworkX[1], maliciousNetworkY[1],  maliciousNetworkX[2], maliciousNetworkY[2])
+        maliciousNode = display.newLine( maliciousGroup, maliciousNetworkX[1], maliciousNetworkY[1],  maliciousNetworkX[2], maliciousNetworkY[2])
+            maliciousNode:setStrokeColor( 1, 0, 0, 1 )
+            maliciousNode.strokeWidth = 1
 
         for i = 3, 10, 1 do
-            node:append( maliciousNetworkX[i], maliciousNetworkY[i] )
+            maliciousNode:append( maliciousNetworkX[i], maliciousNetworkY[i] )
         end
 
-        node:setStrokeColor( 1, 0, 0, 1 )
-        node.strokeWidth = 1
     end
 
-    toPlot:setFillColor(1, 0, 0, 1)
+    graphContainer:insert(maliciousGroup)
+
 end
 
 -- Render zero days points and network
 function plotZeroDays(i, point)
-    local toPlot = display.newCircle(  zeroDaysGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+
+    zeroDaysGroup  = display.newGroup()
+    zeroDaysToPlot = display.newCircle(  zeroDaysGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+        zeroDaysToPlot:setFillColor(0, 1, 0, 1)
 
     zeroDaysNetworkX[i] = i * xPlot
     zeroDaysNetworkY[i] = ((point * clearance) * invert) + yPlot
+
     if (i == 10) then 
-        local node = display.newLine( zeroDaysGroup, zeroDaysNetworkX[1], zeroDaysNetworkY[1],  zeroDaysNetworkX[2], zeroDaysNetworkY[2])
+        zeroDaysNode = display.newLine( zeroDaysGroup, zeroDaysNetworkX[1], zeroDaysNetworkY[1],  zeroDaysNetworkX[2], zeroDaysNetworkY[2])
+            zeroDaysNode:setStrokeColor( 0, 1, 0, 1 )
+            zeroDaysNode.strokeWidth = 1
 
         for i = 3, 10, 1 do
-            node:append( zeroDaysNetworkX[i], zeroDaysNetworkY[i] )
+            zeroDaysNode:append( zeroDaysNetworkX[i], zeroDaysNetworkY[i] )
         end
 
-        node:setStrokeColor( 0, 1, 0, 1 )
-        node.strokeWidth = 1
     end
 
-    toPlot:setFillColor(0, 1, 0, 1)
+    graphContainer:insert(zeroDaysGroup)
+
+end
+
+-- List transformation function
+function listFunctions()
+
+    for i=1, #mathFunction do
+        local rowData = RowData.new(mathFunction[i], {ID=i})
+        mathFunction[i] = rowData
+    end
+
 end
 
 -- Callback function that will be called when a row is clicked.
 function onRowSelected(name, rowData)
+    
     if (name == "functionName") then
         graphTitle.text = rowData.value
     end
 
     if (graphTitle.text == 'default') then
         print('default')
-
+        for i = 1, 10, 1 do
+            plotBenign(i, benign[i])
+            plotMalicious(i, malicious[i])
+            plotZeroDays(i, zeroDays[i])
+        end
     elseif (graphTitle.text == 'sin') then
         print('sin')
+        if benignGroup ~= nil then
+            display.remove(benignGroup)
+        end
 
     elseif (graphTitle.text == 'cos') then
         print('cos')
@@ -176,20 +218,20 @@ function scene:create( event )
 -- Instantiation
 -- -----------------------------------------------------------------------------------
 
+    -- Group 
     graphContainer = display.newGroup()
         graphContainer.x = 10
         graphContainer.y = 30
-        graphContainer.actualContentWidth = 12
+        graphContainer.actualContentWidth  = 12
         graphContainer.actualContentHeight = 4
 
-    benignGroup    = display.newGroup()
-    maliciousGroup = display.newGroup()
-    zeroDaysGroup  = display.newGroup()
+    -- benignGroup    = display.newGroup()
+    -- maliciousGroup = display.newGroup()
+    -- zeroDaysGroup  = display.newGroup()
 
-    for i=1, #mathFunction do
-        local rowData = RowData.new(mathFunction[i], {ID=i})
-        mathFunction[i] = rowData
-    end
+    legends = display.newGroup()
+        legends.y = 5
+
 
     local function drawLines(i)
         local line = display.newLine( graphContainer, 0, i, 300, i )
@@ -198,17 +240,14 @@ function scene:create( event )
     end
 
     colorDDM = DDM.new({
-        name = "functionName",
-        x = width - 160,
-        y = height - 230,
-        width = 295,
-        height = 45,
-        dataList = mathFunction,
+        name          = "functionName",
+        x             = width  - 160,
+        y             = height - 230,
+        width         = 295,
+        height        = 45,
+        dataList      = mathFunction,
         onRowSelected = onRowSelected
     })
-
-    legends = display.newGroup()
-        legends.y = 5
 
     background = display.newRect(sceneGroup, 0, 0, width, height)
         background.x = width  * 0.5
@@ -270,19 +309,10 @@ function scene:create( event )
     sceneGroup:insert(graphContainer)
     sceneGroup:insert(colorDDM)
     graphContainer:insert(legends)
-    graphContainer:insert(benignGroup )  
-    graphContainer:insert(maliciousGroup)
-    graphContainer:insert(zeroDaysGroup )
 
-    -- -- Draw horiontal lines
+    -- Draw graphs' horizontal lines
     for i = 0, 240, clearance do
         drawLines(i)
-    end
-
-    for i = 1, 10, 1 do
-        plotBenign(i, benign[i])
-        plotMalicious(i, malicious[i])
-        plotZeroDays(i, zeroDays[i])
     end
 
     -- Event listeners
@@ -329,7 +359,10 @@ function scene:destroy( event )
  
 end
  
- 
+-- -----------------------------------------------------------------------------------
+-- Function calls
+-- -----------------------------------------------------------------------------------
+listFunctions()
 -- -----------------------------------------------------------------------------------
 -- Scene event function listeners
 -- -----------------------------------------------------------------------------------
