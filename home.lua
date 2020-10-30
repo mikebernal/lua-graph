@@ -33,6 +33,7 @@ local zeroDaysNetworkX  = {}
 local zeroDaysNetworkY  = {}
 
 -- Graph coordinates
+-- Use to configure the boundaries based on the graph dimension
 local lDim      = 10
 local radius    = 2.4
 local xPlot     = 27 
@@ -67,6 +68,7 @@ local maliciousGroup
 local zeroDaysGroup 
 local legends
 
+-- Neurons representation
 local benignNode
 local maliciousNode
 local zeroDaysNode
@@ -88,7 +90,9 @@ end
 function plotBenign(i, point)
 
     benignGroup  = display.newGroup()
-    -- Bug
+
+    -- Bug: BenignToPlot object not being removed
+    -- Expected output: benignToPlot object should be removed from the graph when new function is selected
     benignToPlot = display.newCircle( benignGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
      benignToPlot:setFillColor(0, 0, 1, 1)
 
@@ -178,72 +182,42 @@ function removePlots()
     end
 end
 
--- Callback function that will be called when a row is clicked.
-function onRowSelected(name, rowData)
+function transformFunc(fname)
 
-    if (name == "functionName") then
-        graphTitle.text = rowData.value
-    end
+    print(fname)
+    removePlots()
 
-    if (graphTitle.text == 'default') then
-        print('default')
-
-         removePlots()
-
-        for i = 1, 10, 1 do
+    for i = 1, 10, 1 do
+        if (fname == "cos") then
+            plotBenign(i, math.cos(benign[i]))
+            plotMalicious(i, math.cos(malicious[i]))
+            plotZeroDays(i, math.cos(zeroDays[i]))
+        elseif (fname == "sin") then
+            plotBenign(i, math.sin(benign[i]))
+            plotMalicious(i, math.sin(malicious[i]))
+            plotZeroDays(i, math.sin(zeroDays[i]))
+        elseif (fname == "tan") then
+            plotBenign(i, math.tan(benign[i]))
+            plotMalicious(i, math.tan(malicious[i]))
+            plotZeroDays(i, math.tan(zeroDays[i]))
+        elseif (fname == "log10") then
+            plotBenign(i, math.log10(benign[i]))
+            plotMalicious(i, math.log10(malicious[i]))
+            plotZeroDays(i, math.log10(zeroDays[i]))
+        else
             plotBenign(i, benign[i])
             plotMalicious(i, malicious[i])
             plotZeroDays(i, zeroDays[i])
         end
 
-    elseif (graphTitle.text == 'sin') then
-        print('sin')
-        
-        removePlots()
-
-        for i = 1, 10, 1 do
-            plotBenign(i, math.sin(benign[i]))
-            plotMalicious(i, math.sin(malicious[i]))
-            plotZeroDays(i, math.sin(zeroDays[i]))
-        end
-
-    elseif (graphTitle.text == 'cos') then
-        print('cos')
-
-        removePlots()
-
-        for i = 1, 10, 1 do
-            plotBenign(i, math.cos(benign[i]))
-            plotMalicious(i, math.cos(malicious[i]))
-            plotZeroDays(i, math.cos(zeroDays[i]))
-        end
-    
-    elseif (graphTitle.text == 'tan') then
-        print('tan')
-
-        removePlots()
-
-        for i = 1, 10, 1 do
-            plotBenign(i, math.tan(benign[i]))
-            plotMalicious(i, math.tan(malicious[i]))
-            plotZeroDays(i, math.tan(zeroDays[i]))
-        end
-
-    elseif (graphTitle.text == 'log10') then
-        print('log10')
-
-        removePlots()
-
-        for i = 1, 10, 1 do
-            plotBenign(i, math.log10(benign[i]))
-            plotMalicious(i, math.log10(malicious[i]))
-            plotZeroDays(i, math.log10(zeroDays[i]))
-        end
-    else
-        print('no selected')  
-
     end
+end
 
+-- Callback function that will be called when a row is clicked.
+function onRowSelected(name, rowData)
+
+    transformFunc(rowData.value)
+    
 end
 
 -- -----------------------------------------------------------------------------------
