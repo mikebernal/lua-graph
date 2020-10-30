@@ -23,3 +23,5 @@
 3. Refactor code
 4. Group elements
 5. Add toggle connection point
+
+Authored by Mike Bernal
