@@ -37,6 +37,8 @@ local options = {
     time = 400,
 }
 
+local author
+
 -- IO
 -- Path for the file to read
 local path = system.pathForFile( "author.txt")
@@ -63,6 +65,8 @@ file = nil
 local function toggleMenu( event )
     if (event.phase == "ended") then
         composer.showOverlay("menu", options)
+        author.isVisible = false
+
     end
 end
 
@@ -91,10 +95,15 @@ function scene:create( event )
         navIcon.y = -25
         navIcon:setFillColor(0.1, 0.1, 0.1)
 
+    author = display.newImageRect( "author.png", 150, 170 )
+        author.x = 90
+        author.y = 90
+
     contents = display.newText(sceneGroup, contents, 0, 0, native.systemFont, 12)
-        contents.x = width - 188
-        contents.y = 100
+        contents.x = width - 170
+        contents.y = 280
         contents:setFillColor(0.1, 0.1, 0.1)
+     
 
     -- Event listeners
     navIcon:addEventListener("touch", toggleMenu)
@@ -110,6 +119,7 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
+        author.isVisible = true
  
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
@@ -126,10 +136,10 @@ function scene:hide( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
+        author.isVisible = false
  
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
-
     end
 end
  
