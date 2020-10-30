@@ -256,9 +256,9 @@ function scene:create( event )
  
     local sceneGroup = self.view
     -- Code here runs when the scene is first created but has not yet appeared on screen
--- -----------------------------------------------------------------------------------
--- Instantiation
--- -----------------------------------------------------------------------------------
+    -- -----------------------------------------------------------------------------------
+    -- Instantiation
+    -- -----------------------------------------------------------------------------------
 
     -- Group 
     graphContainer = display.newGroup()

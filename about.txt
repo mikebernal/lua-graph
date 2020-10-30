@@ -1,0 +1,14 @@
+Assessment 2: Corona SDK and Lua
+
+Introduction to Mobile application development
+
+
+This project serves as a gateway for developing
+mobile application for CSP 2108
+
+This project is created using Corona SDK and Lua.
+
+You can check the public repository at
+https://github.com/mikebernal/lua-graph
+
+Version 1.0.

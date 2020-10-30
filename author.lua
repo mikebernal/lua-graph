@@ -19,21 +19,43 @@ local scene = composer.newScene()
 -- Initialization
 -- -----------------------------------------------------------------------------------
 
-  -- Screen dimension 
-  local width  = display.actualContentWidth
-  local height = display.actualContentHeight
+-- Screen dimension 
+local width  = display.actualContentWidth
+local height = display.actualContentHeight
 
-  local background
-  local title
-  local navIcon
-  local funcTitle
+-- UI elements
 
-  local options = {
-      isModal = true,
-      effect = "fade",
-      time = 400,
-  }
+local background
+local title
+local navIcon
+local funcTitle
+local contents
 
+local options = {
+    isModal = true,
+    effect = "fade",
+    time = 400,
+}
+
+-- IO
+-- Path for the file to read
+local path = system.pathForFile( "author.txt")
+-- Open the file handle
+local file, errorString = io.open( path, "r" )
+
+if not file then
+    -- Error occurred; output the cause
+    print( "File error: " .. errorString )
+else
+    -- Read data from file
+    contents = file:read( "*a" )
+    -- Output the file contents
+    print( "Contents of " .. path .. "\n" .. contents )
+    -- Close the file handle
+    io.close( file )
+end
+
+file = nil
 -- -----------------------------------------------------------------------------------
 -- Function definition
 -- -----------------------------------------------------------------------------------
@@ -68,6 +90,11 @@ function scene:create( event )
         navIcon.x = width - 30
         navIcon.y = -25
         navIcon:setFillColor(0.1, 0.1, 0.1)
+
+    contents = display.newText(sceneGroup, contents, 0, 0, native.systemFont, 12)
+        contents.x = width - 188
+        contents.y = 100
+        contents:setFillColor(0.1, 0.1, 0.1)
 
     -- Event listeners
     navIcon:addEventListener("touch", toggleMenu)
