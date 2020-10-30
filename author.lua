@@ -68,6 +68,8 @@ local function toggleMenu( event )
         author.isVisible = false
 
     end
+    author.isVisible = true
+
 end
 
 -- -----------------------------------------------------------------------------------
@@ -95,7 +97,7 @@ function scene:create( event )
         navIcon.y = -25
         navIcon:setFillColor(0.1, 0.1, 0.1)
 
-    author = display.newImageRect( "author.png", 150, 170 )
+    author = display.newImageRect( sceneGroup, "author.png", 150, 170 )
         author.x = 90
         author.y = 90
 
@@ -103,7 +105,6 @@ function scene:create( event )
         contents.x = width - 170
         contents.y = 280
         contents:setFillColor(0.1, 0.1, 0.1)
-     
 
     -- Event listeners
     navIcon:addEventListener("touch", toggleMenu)

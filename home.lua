@@ -5,7 +5,7 @@
 local composer = require("composer")
 
 -- Third party libraries
-local DDM = require "lib.DropDownMenu"
+local DDM     = require "lib.DropDownMenu"
 local RowData = require "lib.RowData"
 
 -- Code outside of the scene event functions below will only be executed ONCE unless
@@ -20,8 +20,8 @@ local width  = display.actualContentWidth
 local height = display.actualContentHeight
 
 -- Dataset
-local benign    = {  -2.4, -2.7, -2.07, 2.37, -2.14, -2.63, 2.07, 2.18, 2.24, 2.52   }
-local malicious = {  2.52, 2.17, 2.36, -2.33, 2.45, 2.4, -2.14, -2.77, -2.51, -2.76  }
+local benign    = { -2.4, -2.7, -2.07, 2.37, -2.14, -2.63, 2.07, 2.18, 2.24,   2.52  }
+local malicious = { 2.52, 2.17, 2.36, -2.33, 2.45, 2.4, -2.14, -2.77, -2.51,  -2.76  }
 local zeroDays  = { 0.25, 0.01, 0.22, 0.76, -0.54, -0.06, -0.33, -0.25, 1.73, -0.74  }
 
 -- Node points
@@ -88,6 +88,7 @@ end
 function plotBenign(i, point)
 
     benignGroup  = display.newGroup()
+    -- Bug
     benignToPlot = display.newCircle( benignGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
      benignToPlot:setFillColor(0, 0, 1, 1)
 
@@ -176,8 +177,6 @@ function removePlots()
         display.remove(zeroDaysGroup)
     end
 end
-
-
 
 -- Callback function that will be called when a row is clicked.
 function onRowSelected(name, rowData)
