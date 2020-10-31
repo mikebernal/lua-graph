@@ -41,10 +41,6 @@ local yPlot     = 115
 local clearance = 35
 local invert    = -1
 
-local benignToPlot
-local maliciousToPlot
-local zeroDaysToPlot
-
 -- UI elements
 local background
 local title
@@ -58,7 +54,7 @@ local benignLabel
 local maliciousLabel
 local zeroDaysLabel
 local colorDDM
-local mathFunction = { "default", "sin", "cos", "tan", "log10" }
+local mathFunction = { "default", "sin", "cos", "tan", "modf","abs", "frexp" }
 local options      = { isModal = true, effect = "fade", time = 400 }
 
 -- Groups
@@ -72,6 +68,13 @@ local legends
 local benignNode
 local maliciousNode
 local zeroDaysNode
+
+-- Benign plot table
+local benignPlotTable    = {}
+local maliciousPlotTable = {}
+local zeroDaysPlotTable  = {}
+
+local fname
 
 -- -----------------------------------------------------------------------------------
 -- Function definition
@@ -90,11 +93,8 @@ end
 function plotBenign(i, point)
 
     benignGroup  = display.newGroup()
-
-    -- Bug: BenignToPlot object not being removed
-    -- Expected output: benignToPlot object should be removed from the graph when new function is selected
-    benignToPlot = display.newCircle( benignGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
-     benignToPlot:setFillColor(0, 0, 1, 1)
+    benignPlotTable[i] = display.newCircle( benignGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+        benignPlotTable[i]:setFillColor(0, 0, 1, 1)
 
     benignNetworkX[i] = i * xPlot
     benignNetworkY[i] = ((point * clearance) * invert) + yPlot
@@ -118,8 +118,8 @@ end
 function plotMalicious(i, point)
 
     maliciousGroup  = display.newGroup()
-    MaliciousToPlot = display.newCircle( maliciousGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
-        MaliciousToPlot:setFillColor(1, 0, 0, 1)
+    maliciousPlotTable[i] = display.newCircle( maliciousGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+        maliciousPlotTable[i]:setFillColor(1, 0, 0, 1)
 
     maliciousNetworkX[i] = i * xPlot
     maliciousNetworkY[i] = ((point * clearance) * invert) + yPlot
@@ -143,8 +143,8 @@ end
 function plotZeroDays(i, point)
 
     zeroDaysGroup  = display.newGroup()
-    zeroDaysToPlot = display.newCircle(  zeroDaysGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
-        zeroDaysToPlot:setFillColor(0, 1, 0, 1)
+    zeroDaysPlotTable[i] = display.newCircle(  zeroDaysGroup, i * xPlot, ((point * clearance) * invert) + yPlot, radius )
+        zeroDaysPlotTable[i]:setFillColor(0, 1, 0, 1)
 
     zeroDaysNetworkX[i] = i * xPlot
     zeroDaysNetworkY[i] = ((point * clearance) * invert) + yPlot
@@ -174,17 +174,27 @@ function listFunctions()
 
 end
 
+-- Remove plotted points on function change
 function removePlots() 
     if (benignGroup ~= nil and maliciousGroup ~= nil and zeroDaysGroup ~= nil) then
+        display.remove(benignPlotTable)
+
+        for i = 1, 10, 1 do
+            display.remove(benignPlotTable[i])
+            display.remove(maliciousPlotTable[i])
+            display.remove(zeroDaysPlotTable[i])
+            print(benignPlotTable[1])
+        end
+
         display.remove(benignGroup)
         display.remove(maliciousGroup)
         display.remove(zeroDaysGroup)
     end
 end
 
-function transformFunc(fname)
-
-    print(fname)
+-- Plot points on function select
+function transformFunc(name, rowData)
+    fname = rowData.value
     removePlots()
 
     for i = 1, 10, 1 do
@@ -200,10 +210,18 @@ function transformFunc(fname)
             plotBenign(i, math.tan(benign[i]))
             plotMalicious(i, math.tan(malicious[i]))
             plotZeroDays(i, math.tan(zeroDays[i]))
-        elseif (fname == "log10") then
-            plotBenign(i, math.log10(benign[i]))
-            plotMalicious(i, math.log10(malicious[i]))
-            plotZeroDays(i, math.log10(zeroDays[i]))
+        elseif (fname == "modf") then
+            plotBenign(i, math.modf(benign[i]))
+            plotMalicious(i, math.modf(malicious[i]))
+            plotZeroDays(i, math.modf(zeroDays[i]))
+        elseif (fname == "abs") then
+            plotBenign(i, math.abs(benign[i]))
+            plotMalicious(i, math.abs(malicious[i]))
+            plotZeroDays(i, math.abs(zeroDays[i]))
+        elseif (fname == "frexp") then
+            plotBenign(i, math.frexp(benign[i]))
+            plotMalicious(i, math.frexp(malicious[i]))
+            plotZeroDays(i, math.frexp(zeroDays[i]))
         else
             plotBenign(i, benign[i])
             plotMalicious(i, malicious[i])
@@ -211,13 +229,6 @@ function transformFunc(fname)
         end
 
     end
-end
-
--- Callback function that will be called when a row is clicked.
-function onRowSelected(name, rowData)
-
-    transformFunc(rowData.value)
-    
 end
 
 -- -----------------------------------------------------------------------------------
@@ -256,7 +267,7 @@ function scene:create( event )
         width         = 295,
         height        = 45,
         dataList      = mathFunction,
-        onRowSelected = onRowSelected
+        onRowSelected = transformFunc
     })
 
     background = display.newRect(sceneGroup, 0, 0, width, height)
