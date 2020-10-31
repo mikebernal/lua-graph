@@ -16,8 +16,5 @@
 
 1. menu
 
-#### To do
-
-1. Bug: remove plotted points when new function is selected
 
 Authored by Mike Bernal
