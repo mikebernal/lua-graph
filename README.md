@@ -1,5 +1,13 @@
 ## Introduction to Lua and Corona SDK
 
+#### Wireframe
+
+![Scenes](wireframe.png)
+
+#### Home Scene
+
+![Home](home.png)
+
 #### Libraries
 
 1. widget
